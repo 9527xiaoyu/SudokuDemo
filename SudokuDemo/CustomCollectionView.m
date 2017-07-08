@@ -7,8 +7,8 @@
 //
 
 #import "CustomCollectionView.h"
-//#import "MYCollectionViewCell.h"
 #import "SudokuCollectionCell.h"
+#import "CollectionHeaderView.h"
 
 #import <Masonry.h>
 
@@ -59,15 +59,12 @@
 {
     [self.collection mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.and.left.equalTo(self).offset(0);
-        //        make.left.equalTo(self).offset(15);
         make.right.equalTo(self).offset(0);
         make.bottom.equalTo(self).offset(-20);
-        //        make.size.mas_equalTo(CGSizeMake(414, 656));
     }];
     [self.itemsLab mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.and.left.equalTo(self).offset(25);
         make.left.equalTo(self).offset(18);
-//        make.right.equalTo(self).offset(0);
         make.bottom.equalTo(self).offset(-29);
         make.width.offset(35);
     }];
@@ -96,21 +93,11 @@
         //    [_collection registerNib:[UINib nibWithNibName:@"MYCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"cell"];
         [_collection registerClass:[SudokuCollectionCell class] forCellWithReuseIdentifier:@"cell"];
         //添加头 一步：注册头视图，不注册则奔溃
-        [_collection registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"collectionHeader"];
+        [_collection registerClass:[CollectionHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"collectionHeader"];
         _collection.backgroundColor = [UIColor whiteColor];
         
     }
     return _collection;
-}
-
--(UILabel *)itemsLab{
-    if (_itemsLab) {
-        _itemsLab=[[UILabel alloc]init];
-        _itemsLab.textColor=[UIColor blackColor];
-        _itemsLab.font=[UIFont fontWithName:@".PingFang-SC-Medium" size:16];
-        _itemsLab.textAlignment=NSTextAlignmentLeft;
-    }
-    return _itemsLab;
 }
 
 -(void)CustomCollectionViewWithItemsArray:(NSArray *)itemsArray CategoryArray:(NSArray *)categoryArray Requst:(CustomCollectionCheckedBlock)block{
@@ -131,17 +118,10 @@
     return 4;
 }
 
-//添加头 二步
+//添加一个补充视图（头／脚） 二步
 -(UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-    UICollectionReusableView *headView=[collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"collectionHeader" forIndexPath:indexPath];
-    
-    _itemsLab=[[UILabel alloc]initWithFrame:CGRectMake(<#CGFloat x#>, <#CGFloat y#>, <#CGFloat width#>, <#CGFloat height#>)];
-    _itemsLab.text=self.itemsArray[indexPath.section];
-    _itemsLab.textColor=[UIColor blackColor];
-    _itemsLab.font=[UIFont fontWithName:@".PingFang-SC-Medium" size:16];
-    _itemsLab.textAlignment=NSTextAlignmentLeft;
-    [headView addSubview:_itemsLab];
-    headView.backgroundColor = [UIColor blueColor];
+    CollectionHeaderView *headView=[collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"collectionHeader" forIndexPath:indexPath];
+    headView.titleLabel.text=_itemsArray[indexPath.section];
     return headView;
 }
 
